@@ -116,9 +116,8 @@ public class AdapterFather<T extends AdapterDataJudge> extends BaseAdapter {
 			view = convertView;
 			snf = (AdapterInnerClass) view.getTag(view.getId());
 		}
-		// 确定索引和优化内部类不会报错才进
+		// 确定优化内部类不会报错才进
 		if (snf != null) {
-			// 然后根据索引值获取布局对象
 			agencyInterface.setViewData(snf, be);
 		}
 		return view;
