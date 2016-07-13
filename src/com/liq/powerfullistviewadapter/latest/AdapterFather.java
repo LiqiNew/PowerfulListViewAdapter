@@ -1,21 +1,18 @@
 package com.liq.powerfullistviewadapter.latest;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import android.content.Context;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 /**
  *  所有ListViewItem通用BaseAdapter适配器的基类
  */
 public class AdapterFather<T extends AdapterDataJudge> extends BaseAdapter {
-	protected List<T> data;// 数据集合
+	protected ArrayList<T> data;// 数据集合
 	protected Context context;
 	protected ArrayList<AdapterItemLayoutData> layoutList;// 此集合是用来装layout布局ID和布局标识
 	private AdapterAgencyInterface<T> agencyInterface;
@@ -31,7 +28,7 @@ public class AdapterFather<T extends AdapterDataJudge> extends BaseAdapter {
 	 * @param agencyInterface
 	 *            getView操作回调接口
 	 */
-	public AdapterFather(List<T> data,
+	public AdapterFather(ArrayList<T> data,
 			ArrayList<AdapterItemLayoutData> layoutList, Context context,
 			AdapterAgencyInterface<T> agencyInterface) throws Exception {
 		this.data = data;
@@ -116,8 +113,9 @@ public class AdapterFather<T extends AdapterDataJudge> extends BaseAdapter {
 			view = convertView;
 			snf = (AdapterInnerClass) view.getTag(view.getId());
 		}
-		// 确定优化内部类不会报错才进
+		// 确定索引和优化内部类不会报错才进
 		if (snf != null) {
+			// 然后根据索引值获取布局对象
 			agencyInterface.setViewData(snf, be);
 		}
 		return view;
@@ -130,17 +128,38 @@ public class AdapterFather<T extends AdapterDataJudge> extends BaseAdapter {
 	 * @param snf
 	 */
 	public void pollWidget(View view, AdapterInnerClass snf) {
-		ViewGroup viewGroup = (ViewGroup) view;
-		int childCount = viewGroup.getChildCount();
-		for (int j = 0; j < childCount; j++) {
-			View childAt = viewGroup.getChildAt(j);
-			// 布局轮询获取控件
-			if (childAt instanceof LinearLayout
-					|| childAt instanceof RelativeLayout) {
-				pollWidget(childAt, snf);
-			} else
-				snf.obj.put(childAt.getId(), childAt);
+		if (!(view instanceof ViewGroup)) {
+			storageId(snf, view.getId(), view);
+		} else {
+			ViewGroup viewGroup = (ViewGroup) view;
+			int childCount = viewGroup.getChildCount();
+			if (childCount > 0) {
+				for (int j = 0; j < childCount; j++) {
+					View childAt = viewGroup.getChildAt(j);
+					// 布局轮询获取控件
+					if (childAt instanceof ViewGroup) {
+						storageId(snf, childAt.getId(), childAt);
+						pollWidget(childAt, snf);
+					} else
+						storageId(snf, childAt.getId(), childAt);
+				}
+			} else{
+				storageId(snf, view.getId(), view);
+			}
+			storageId(snf, view.getId(), view);
 		}
+	}
+
+	/**
+	 * 存储有设置的ID控件
+	 * 
+	 * @param snf
+	 * @param id
+	 * @param view
+	 */
+	private void storageId(AdapterInnerClass snf, int id, View view) {
+		if (id > 0)
+			snf.obj.put(id, view);
 	}
 
 	public class AdapterInnerClass {
