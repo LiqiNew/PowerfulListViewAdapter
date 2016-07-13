@@ -33,7 +33,7 @@ public class LatestMainActivity extends Activity {
 		setContentView(R.layout.main_activity);
 		list_view = (ListView) findViewById(R.id.list_view);
 		// 适配器里面的适配器数据（数据类型数量不能多于布局展示集合的数量）
-		List<TestData> dataList = new ArrayList<TestData>();
+		ArrayList<TestData> dataList = new ArrayList<TestData>();
 		for (int i = 0; i < 50; i++) {
 			TestData data = new TestData();
 			if (i % 1 == 0) {
