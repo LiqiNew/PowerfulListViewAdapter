@@ -24,7 +24,7 @@ import android.widget.TextView;
  */
 public class LatestMainActivity extends Activity {
 	private ListView list_view;
-	// 此处定义的标识
+	// 此处定义的布局标识，从0开始自然升序
 	private final int TEXT = 0x0, IMAGER = 0x1;
 
 	@Override
